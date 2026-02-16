@@ -83,6 +83,22 @@ export const businessSettings = pgTable('business_settings', {
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 })
 
+export const pluginSales = pgTable('plugin_sales', {
+  id: serial('id').primaryKey(),
+  saleId: integer('sale_id').notNull().unique(),
+  pluginName: text('plugin_name').notNull(),
+  edition: text('edition').notNull(),
+  renewal: integer('renewal').default(0).notNull(),
+  grossAmount: numeric('gross_amount', { precision: 12, scale: 2 }),
+  netAmount: numeric('net_amount', { precision: 12, scale: 2 }),
+  grossAmountEur: numeric('gross_amount_eur', { precision: 12, scale: 2 }),
+  netAmountEur: numeric('net_amount_eur', { precision: 12, scale: 2 }),
+  exchangeRate: numeric('exchange_rate', { precision: 10, scale: 6 }),
+  customer: text('customer'),
+  dateSold: timestamp('date_sold'),
+  createdAt: timestamp('created_at').defaultNow().notNull()
+})
+
 // Relations
 export const clientsRelations = relations(clients, ({ many }) => ({
   invoices: many(invoices)

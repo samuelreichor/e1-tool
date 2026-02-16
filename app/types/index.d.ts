@@ -80,6 +80,21 @@ declare global {
     sentAt: string
   }
 
+  interface PluginSale {
+    id: number
+    saleId: number
+    pluginName: string
+    edition: string
+    renewal: number
+    grossAmount: string | null
+    netAmount: string | null
+    grossAmountEur: string | null
+    netAmountEur: string | null
+    exchangeRate: string | null
+    customer: string | null
+    dateSold: string | null
+  }
+
   interface LineItem {
     description: string
     quantity: number

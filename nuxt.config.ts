@@ -25,6 +25,9 @@ export default defineNuxtConfig({
     googleClientId: '',
     googleClientSecret: '',
     googleRefreshToken: '',
+    craftConsoleEmail: '',
+    craftConsolePassword: '',
+    craftConsoleOrgId: '',
     oauth: {
       github: {
         clientId: '',

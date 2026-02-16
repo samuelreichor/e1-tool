@@ -25,6 +25,13 @@ const links = [[{
     open.value = false
   }
 }, {
+  label: 'Plugin Sales',
+  icon: 'i-lucide-shopping-cart',
+  to: '/plugin-sales',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
   label: 'Settings',
   to: '/settings',
   icon: 'i-lucide-settings',
