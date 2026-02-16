@@ -146,7 +146,6 @@ async function onSubmit() {
 
     let result: Invoice
     if (props.invoice) {
-      // @ts-expect-error Nuxt route type recursion limit with dynamic URLs
       result = await $fetch(`/api/invoices/${props.invoice.id}`, {
         method: 'PUT',
         body

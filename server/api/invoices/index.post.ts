@@ -46,6 +46,10 @@ export default defineEventHandler(async (event) => {
     grossTotal: grossTotal.toFixed(2)
   }).returning()
 
+  if (!invoice) {
+    throw createError({ statusCode: 500, statusMessage: 'Rechnung konnte nicht erstellt werden' })
+  }
+
   if (itemsWithTotals.length > 0) {
     await db.insert(invoiceItems).values(
       itemsWithTotals.map(item => ({

@@ -14,7 +14,7 @@ export async function generateInvoiceNumber(): Promise<string> {
 
   let nextNum = 1
   if (last) {
-    const lastNum = parseInt(last.invoiceNumber.split('-')[2], 10)
+    const lastNum = parseInt(last.invoiceNumber.split('-')[2] ?? '', 10)
     if (!isNaN(lastNum)) {
       nextNum = lastNum + 1
     }

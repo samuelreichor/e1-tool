@@ -22,6 +22,10 @@ export default defineEventHandler(async (event) => {
     .where(eq(clients.id, invoice.clientId))
     .limit(1)
 
+  if (!client) {
+    throw createError({ statusCode: 404, statusMessage: 'Kunde nicht gefunden' })
+  }
+
   const items = await db
     .select()
     .from(invoiceItems)

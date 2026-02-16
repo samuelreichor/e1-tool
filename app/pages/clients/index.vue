@@ -4,7 +4,7 @@ const search = ref('')
 const showForm = ref(false)
 const showDelete = ref(false)
 const deleteLoading = ref(false)
-const deleteClient = ref<Client | null>(null)
+const deleteClient = ref<AppClient | null>(null)
 
 const { data: clients, refresh } = useLazyFetch('/api/clients', {
   query: { search }
@@ -29,7 +29,7 @@ function openCreate() {
   showForm.value = true
 }
 
-function openDelete(client: Client) {
+function openDelete(client: AppClient) {
   deleteClient.value = client
   showDelete.value = true
 }
@@ -59,47 +59,52 @@ async function confirmDelete() {
         placeholder="Kunden suchen..."
         class="w-full sm:max-w-xs"
       />
-      <UButton icon="i-lucide-plus" label="Neuer Kunde" class="w-full sm:w-auto" @click="openCreate" />
+      <UButton
+        icon="i-lucide-plus"
+        label="Neuer Kunde"
+        class="w-full sm:w-auto"
+        @click="openCreate"
+      />
     </div>
 
     <div class="overflow-x-auto">
-    <UTable :data="clients || []" :columns="columns" class="w-full">
-      <template #name-cell="{ row }">
-        <NuxtLink :to="`/clients/${row.original.id}`" class="text-primary hover:underline font-medium">
-          {{ row.original.name }}
-        </NuxtLink>
-      </template>
-      <template #hourlyRate-cell="{ row }">
-        <span class="tabular-nums">{{ formatCurrency(row.original.hourlyRate) }}</span>
-      </template>
-      <template #actions-cell="{ row }">
-        <div class="flex justify-end gap-1">
-          <UButton
-            icon="i-lucide-pencil"
-            variant="ghost"
-            color="neutral"
-            size="xs"
-            :to="`/clients/${row.original.id}`"
-          />
-          <UButton
-            icon="i-lucide-trash-2"
-            variant="ghost"
-            color="error"
-            size="xs"
-            @click="openDelete(row.original)"
-          />
-        </div>
-      </template>
-      <template #empty>
-        <div class="flex flex-col items-center justify-center py-12 gap-2">
-          <UIcon name="i-lucide-users" class="size-10 text-dimmed" />
-          <p class="text-dimmed">
-            Keine Kunden vorhanden
-          </p>
-          <UButton variant="outline" label="Ersten Kunden erstellen" @click="openCreate" />
-        </div>
-      </template>
-    </UTable>
+      <UTable :data="clients || []" :columns="columns" class="w-full">
+        <template #name-cell="{ row }">
+          <NuxtLink :to="`/clients/${row.original.id}`" class="text-primary hover:underline font-medium">
+            {{ row.original.name }}
+          </NuxtLink>
+        </template>
+        <template #hourlyRate-cell="{ row }">
+          <span class="tabular-nums">{{ formatCurrency(row.original.hourlyRate) }}</span>
+        </template>
+        <template #actions-cell="{ row }">
+          <div class="flex justify-end gap-1">
+            <UButton
+              icon="i-lucide-pencil"
+              variant="ghost"
+              color="neutral"
+              size="xs"
+              :to="`/clients/${row.original.id}`"
+            />
+            <UButton
+              icon="i-lucide-trash-2"
+              variant="ghost"
+              color="error"
+              size="xs"
+              @click="openDelete(row.original)"
+            />
+          </div>
+        </template>
+        <template #empty>
+          <div class="flex flex-col items-center justify-center py-12 gap-2">
+            <UIcon name="i-lucide-users" class="size-10 text-dimmed" />
+            <p class="text-dimmed">
+              Keine Kunden vorhanden
+            </p>
+            <UButton variant="outline" label="Ersten Kunden erstellen" @click="openCreate" />
+          </div>
+        </template>
+      </UTable>
     </div>
 
     <ClientFormModal v-model:open="showForm" @saved="refresh" />

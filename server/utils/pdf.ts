@@ -10,6 +10,8 @@ interface PdfPrinterInstance {
 
 // pdfmake 0.3 has double-wrapped __esModule default export
 async function getPdfPrinter(): Promise<PdfPrinterConstructor> {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore pdfmake has no declaration for this subpath
   const mod: Record<string, unknown> = await import('pdfmake/js/Printer.js')
   const resolved = (mod.default as Record<string, unknown>)?.default || mod.default || mod
   return resolved as PdfPrinterConstructor

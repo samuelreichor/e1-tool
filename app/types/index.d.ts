@@ -8,7 +8,7 @@ declare module '#auth-utils' {
 }
 
 declare global {
-  interface Client {
+  interface AppClient {
     id: number
     name: string
     email: string | null
@@ -18,8 +18,8 @@ declare global {
     country: string | null
     taxId: string | null
     hourlyRate: string | null
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
   }
 
   interface Invoice {
@@ -37,8 +37,8 @@ declare global {
     netTotal: string | null
     vatTotal: string | null
     grossTotal: string | null
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
   }
 
   interface InvoiceItem {
@@ -53,7 +53,7 @@ declare global {
   }
 
   interface InvoiceDetail extends Invoice {
-    client: Client
+    client?: AppClient
     items: InvoiceItem[]
   }
 
@@ -77,7 +77,7 @@ declare global {
     templateKey: string | null
     status: 'sent' | 'failed'
     errorMessage: string | null
-    sentAt: Date
+    sentAt: string
   }
 
   interface LineItem {

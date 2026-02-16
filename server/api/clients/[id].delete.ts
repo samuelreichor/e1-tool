@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     .from(invoices)
     .where(eq(invoices.clientId, id))
 
-  if (result.count > 0) {
+  if (result && result.count > 0) {
     throw createError({
       statusCode: 409,
       statusMessage: 'Kunde kann nicht gelöscht werden, da Rechnungen vorhanden sind'

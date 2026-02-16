@@ -88,68 +88,73 @@ async function previewPdf(invoice: InvoiceListItem) {
         placeholder="Status filtern"
         class="w-full sm:w-48"
       />
-      <UButton icon="i-lucide-plus" label="Neue Rechnung" to="/invoices/new" class="w-full sm:w-auto" />
+      <UButton
+        icon="i-lucide-plus"
+        label="Neue Rechnung"
+        to="/invoices/new"
+        class="w-full sm:w-auto"
+      />
     </div>
 
     <div class="overflow-x-auto">
-    <UTable :data="invoicesList || []" :columns="columns" class="w-full">
-      <template #invoiceNumber-cell="{ row }">
-        <NuxtLink :to="`/invoices/${row.original.id}`" class="text-primary hover:underline font-medium">
-          {{ row.original.invoiceNumber }}
-        </NuxtLink>
-      </template>
-      <template #issueDate-cell="{ row }">
-        {{ formatDate(row.original.issueDate) }}
-      </template>
-      <template #grossTotal-cell="{ row }">
-        <span class="tabular-nums">{{ formatCurrency(row.original.grossTotal) }}</span>
-      </template>
-      <template #status-cell="{ row }">
-        <InvoiceStatusBadge :status="row.original.status" />
-      </template>
-      <template #actions-cell="{ row }">
-        <div class="flex justify-end gap-1">
-          <UButton
-            icon="i-lucide-eye"
-            variant="ghost"
-            color="neutral"
-            size="xs"
-            @click="previewPdf(row.original)"
-          />
-          <UButton
-            icon="i-lucide-download"
-            variant="ghost"
-            color="neutral"
-            size="xs"
-            @click="downloadPdf(row.original)"
-          />
-          <UButton
-            icon="i-lucide-pencil"
-            variant="ghost"
-            color="neutral"
-            size="xs"
-            :to="`/invoices/${row.original.id}`"
-          />
-          <UButton
-            v-if="row.original.status === 'draft'"
-            icon="i-lucide-trash-2"
-            variant="ghost"
-            color="error"
-            size="xs"
-            @click="openDelete(row.original)"
-          />
-        </div>
-      </template>
-      <template #empty>
-        <div class="flex flex-col items-center justify-center py-12 gap-2">
-          <UIcon name="i-lucide-file-text" class="size-10 text-dimmed" />
-          <p class="text-dimmed">
-            Keine Rechnungen vorhanden
-          </p>
-          <UButton variant="outline" label="Erste Rechnung erstellen" to="/invoices/new" />
-        </div>
-      </template>
-    </UTable>
+      <UTable :data="invoicesList || []" :columns="columns" class="w-full">
+        <template #invoiceNumber-cell="{ row }">
+          <NuxtLink :to="`/invoices/${row.original.id}`" class="text-primary hover:underline font-medium">
+            {{ row.original.invoiceNumber }}
+          </NuxtLink>
+        </template>
+        <template #issueDate-cell="{ row }">
+          {{ formatDate(row.original.issueDate) }}
+        </template>
+        <template #grossTotal-cell="{ row }">
+          <span class="tabular-nums">{{ formatCurrency(row.original.grossTotal) }}</span>
+        </template>
+        <template #status-cell="{ row }">
+          <InvoiceStatusBadge :status="row.original.status" />
+        </template>
+        <template #actions-cell="{ row }">
+          <div class="flex justify-end gap-1">
+            <UButton
+              icon="i-lucide-eye"
+              variant="ghost"
+              color="neutral"
+              size="xs"
+              @click="previewPdf(row.original)"
+            />
+            <UButton
+              icon="i-lucide-download"
+              variant="ghost"
+              color="neutral"
+              size="xs"
+              @click="downloadPdf(row.original)"
+            />
+            <UButton
+              icon="i-lucide-pencil"
+              variant="ghost"
+              color="neutral"
+              size="xs"
+              :to="`/invoices/${row.original.id}`"
+            />
+            <UButton
+              v-if="row.original.status === 'draft'"
+              icon="i-lucide-trash-2"
+              variant="ghost"
+              color="error"
+              size="xs"
+              @click="openDelete(row.original)"
+            />
+          </div>
+        </template>
+        <template #empty>
+          <div class="flex flex-col items-center justify-center py-12 gap-2">
+            <UIcon name="i-lucide-file-text" class="size-10 text-dimmed" />
+            <p class="text-dimmed">
+              Keine Rechnungen vorhanden
+            </p>
+            <UButton variant="outline" label="Erste Rechnung erstellen" to="/invoices/new" />
+          </div>
+        </template>
+      </UTable>
     </div>
 
     <DeleteConfirmModal

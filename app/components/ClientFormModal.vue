@@ -5,7 +5,7 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 const open = defineModel<boolean>('open', { default: false })
 
 const props = defineProps<{
-  client?: Client
+  client?: AppClient
 }>()
 
 const emit = defineEmits<{
