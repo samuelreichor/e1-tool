@@ -6,6 +6,10 @@ const links = [[{
   icon: 'i-lucide-user',
   to: '/settings',
   exact: true
+}, {
+  label: 'Firmendaten',
+  icon: 'i-lucide-building-2',
+  to: '/settings/business'
 }]] satisfies NavigationMenuItem[][]
 </script>
 

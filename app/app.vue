@@ -18,7 +18,7 @@ useHead({
 })
 
 useSeoMeta({
-  title: 'E1 Accounting',
+  title: 'SR Accounting',
   description: 'Simple accounting app'
 })
 </script>

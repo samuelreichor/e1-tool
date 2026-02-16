@@ -11,6 +11,20 @@ const links = [[{
     open.value = false
   }
 }, {
+  label: 'Kunden',
+  icon: 'i-lucide-users',
+  to: '/clients',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
+  label: 'Rechnungen',
+  icon: 'i-lucide-file-text',
+  to: '/invoices',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
   label: 'Settings',
   to: '/settings',
   icon: 'i-lucide-settings',
@@ -20,6 +34,12 @@ const links = [[{
     label: 'General',
     to: '/settings',
     exact: true,
+    onSelect: () => {
+      open.value = false
+    }
+  }, {
+    label: 'Firmendaten',
+    to: '/settings/business',
     onSelect: () => {
       open.value = false
     }
@@ -45,7 +65,7 @@ const groups = computed(() => [{
     >
       <template #header="{ collapsed }">
         <div class="flex items-center gap-2 p-2" :class="collapsed ? 'justify-center' : ''">
-          <span v-if="!collapsed" class="font-semibold truncate">E1 Accounting</span>
+          <span v-if="!collapsed" class="font-semibold truncate">SR</span>
           <span v-else class="font-semibold">E1</span>
         </div>
       </template>

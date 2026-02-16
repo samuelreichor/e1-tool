@@ -5,7 +5,7 @@ definePageMeta({
 </script>
 
 <template>
-  <UPageCard class="w-full max-w-sm" title="E1 Accounting" description="Sign in to continue">
+  <UPageCard class="w-full max-w-sm" title="SR Accounting" description="Sign in to continue">
     <UButton
       to="/auth/github"
       icon="i-simple-icons-github"
