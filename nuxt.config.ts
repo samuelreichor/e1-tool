@@ -16,6 +16,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     databaseUrl: '',
     allowedGithubId: '',
+    smtpHost: 'smtp.gmail.com',
+    smtpPort: '587',
+    smtpUser: '',
+    smtpPass: '',
+    smtpFrom: '',
     oauth: {
       github: {
         clientId: '',

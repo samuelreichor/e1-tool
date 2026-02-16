@@ -37,6 +37,13 @@ export const invoiceStatusSchema = z.object({
   status: z.enum(['draft', 'sent', 'paid', 'overdue', 'cancelled'])
 })
 
+export const sendInvoiceEmailSchema = z.object({
+  recipient: z.string().email('Ungültige E-Mail-Adresse'),
+  subject: z.string().min(1, 'Betreff ist erforderlich'),
+  body: z.string().min(1, 'Nachricht ist erforderlich'),
+  templateKey: z.string().optional()
+})
+
 export const businessSettingsSchema = z.object({
   companyName: z.string().optional(),
   street: z.string().optional(),

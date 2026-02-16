@@ -20,6 +20,7 @@
     "@vueuse/core": "^14.2.1",
     "@vueuse/nuxt": "^14.2.1",
     "drizzle-orm": "^0.44.0",
+    "nodemailer": "^8.0.1",
     "nuxt": "^4.3.1",
     "nuxt-auth-utils": "^0.5.28",
     "pdfmake": "^0.3.4",
@@ -30,6 +31,7 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.1",
+    "@types/nodemailer": "^7.0.10",
     "@types/pdfmake": "^0.3.1",
     "drizzle-kit": "^0.31.0",
     "eslint": "^10.0.0",

@@ -55,6 +55,17 @@ export const invoiceItems = pgTable('invoice_items', {
   sortOrder: integer('sort_order')
 })
 
+export const emailLogs = pgTable('email_logs', {
+  id: serial('id').primaryKey(),
+  invoiceId: integer('invoice_id').notNull().references(() => invoices.id, { onDelete: 'cascade' }),
+  recipient: text('recipient').notNull(),
+  subject: text('subject').notNull(),
+  templateKey: text('template_key'),
+  status: text('status').notNull(), // 'sent' | 'failed'
+  errorMessage: text('error_message'),
+  sentAt: timestamp('sent_at').defaultNow().notNull()
+})
+
 export const businessSettings = pgTable('business_settings', {
   id: serial('id').primaryKey(),
   companyName: text('company_name'),
@@ -82,12 +93,20 @@ export const invoicesRelations = relations(invoices, ({ one, many }) => ({
     fields: [invoices.clientId],
     references: [clients.id]
   }),
-  items: many(invoiceItems)
+  items: many(invoiceItems),
+  emailLogs: many(emailLogs)
 }))
 
 export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
   invoice: one(invoices, {
     fields: [invoiceItems.invoiceId],
+    references: [invoices.id]
+  })
+}))
+
+export const emailLogsRelations = relations(emailLogs, ({ one }) => ({
+  invoice: one(invoices, {
+    fields: [emailLogs.invoiceId],
     references: [invoices.id]
   })
 }))

@@ -5,9 +5,12 @@ const toast = useToast()
 const id = route.params.id as string
 
 const { data: invoice, refresh } = useLazyFetch(`/api/invoices/${id}`)
+const { data: businessSettings } = useLazyFetch('/api/settings/business')
+const { data: emailLogs, refresh: refreshEmails } = useLazyFetch(`/api/invoices/${id}/emails`)
 
 const showDelete = ref(false)
 const deleteLoading = ref(false)
+const showSend = ref(false)
 
 const statusOptions = [
   { label: 'Entwurf', value: 'draft' },
@@ -66,6 +69,21 @@ async function confirmDelete() {
 function onSaved() {
   refresh()
 }
+
+function onSent() {
+  refresh()
+  refreshEmails()
+}
+
+const templateLabels: Record<string, string> = {
+  friendly: 'Freundlich',
+  formal: 'Formell',
+  reminder: 'Zahlungserinnerung'
+}
+
+function templateLabel(key: string) {
+  return templateLabels[key] || key
+}
 </script>
 
 <template>
@@ -100,6 +118,13 @@ function onSaved() {
           @click="downloadPdf"
         />
         <UButton
+          icon="i-lucide-send"
+          label="Senden"
+          variant="outline"
+          size="sm"
+          @click="showSend = true"
+        />
+        <UButton
           v-if="invoice.status === 'draft'"
           icon="i-lucide-trash-2"
           label="Löschen"
@@ -113,12 +138,55 @@ function onSaved() {
 
     <InvoiceForm :invoice="invoice" @saved="onSaved" />
 
+    <!-- Email Log -->
+    <div v-if="emailLogs?.length" class="mt-6">
+      <h3 class="text-sm font-semibold mb-2">
+        E-Mail-Verlauf
+      </h3>
+      <div class="space-y-2">
+        <div
+          v-for="log in emailLogs"
+          :key="log.id"
+          class="flex items-center justify-between text-sm p-2 rounded border border-default"
+        >
+          <div class="flex items-center gap-2">
+            <UIcon
+              :name="log.status === 'sent' ? 'i-lucide-check-circle' : 'i-lucide-x-circle'"
+              :class="log.status === 'sent' ? 'text-success' : 'text-error'"
+              class="size-4"
+            />
+            <span>{{ log.recipient }}</span>
+            <UBadge
+              v-if="log.templateKey"
+              :label="templateLabel(log.templateKey)"
+              variant="subtle"
+              size="sm"
+            />
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-muted text-xs">{{ log.subject }}</span>
+            <span class="text-muted text-xs">{{ new Date(log.sentAt).toLocaleString('de-AT') }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <DeleteConfirmModal
       v-model:open="showDelete"
       title="Rechnung löschen"
       :description="`Möchten Sie die Rechnung '${invoice.invoiceNumber}' wirklich löschen?`"
       :loading="deleteLoading"
       @confirm="confirmDelete"
+    />
+
+    <SendInvoiceModal
+      v-model:open="showSend"
+      :invoice-id="invoice.id"
+      :invoice-number="invoice.invoiceNumber"
+      :client-email="invoice.client?.email || null"
+      :company-name="businessSettings?.companyName || null"
+      :issue-date="invoice.issueDate || null"
+      @sent="onSent"
     />
   </div>
 </template>

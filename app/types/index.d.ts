@@ -69,6 +69,17 @@ declare global {
     clientId: number
   }
 
+  interface EmailLog {
+    id: number
+    invoiceId: number
+    recipient: string
+    subject: string
+    templateKey: string | null
+    status: 'sent' | 'failed'
+    errorMessage: string | null
+    sentAt: Date
+  }
+
   interface LineItem {
     description: string
     quantity: number
