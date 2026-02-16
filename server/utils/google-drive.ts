@@ -36,25 +36,26 @@ async function findOrCreateFolder(drive: drive_v3.Drive, name: string, parentId:
   return created.data.id!
 }
 
-export async function uploadPdfToDrive({ buffer, fileName, issueDate }: {
+async function uploadToDrive({ buffer, fileName, year, folderName, mimeType }: {
   buffer: Buffer
   fileName: string
-  issueDate: string
+  year: string
+  folderName: string
+  mimeType: string
 }) {
   const config = useRuntimeConfig()
   const drive = getDriveClient()
 
-  const year = new Date(issueDate).getFullYear().toString()
   const yearFolderId = await findOrCreateFolder(drive, year, config.googleDriveFolderId)
-  const rechnungenFolderId = await findOrCreateFolder(drive, '02-rechnungen', yearFolderId)
+  const targetFolderId = await findOrCreateFolder(drive, folderName, yearFolderId)
 
   const existing = await drive.files.list({
-    q: `name = '${fileName}' and '${rechnungenFolderId}' in parents and trashed = false`,
+    q: `name = '${fileName}' and '${targetFolderId}' in parents and trashed = false`,
     fields: 'files(id)'
   })
 
   const media = {
-    mimeType: 'application/pdf',
+    mimeType,
     body: Readable.from(buffer)
   }
 
@@ -71,11 +72,39 @@ export async function uploadPdfToDrive({ buffer, fileName, issueDate }: {
   const response = await drive.files.create({
     requestBody: {
       name: fileName,
-      parents: [rechnungenFolderId]
+      parents: [targetFolderId]
     },
     media,
     fields: 'id,name'
   })
 
   return response.data
+}
+
+export async function uploadPdfToDrive({ buffer, fileName, issueDate }: {
+  buffer: Buffer
+  fileName: string
+  issueDate: string
+}) {
+  return uploadToDrive({
+    buffer,
+    fileName,
+    year: new Date(issueDate).getFullYear().toString(),
+    folderName: '02-rechnungen',
+    mimeType: 'application/pdf'
+  })
+}
+
+export async function uploadExcelToDrive({ buffer, fileName, year }: {
+  buffer: Buffer
+  fileName: string
+  year: string
+}) {
+  return uploadToDrive({
+    buffer,
+    fileName,
+    year,
+    folderName: '03-ea-rechnung',
+    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  })
 }

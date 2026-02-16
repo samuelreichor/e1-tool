@@ -1,6 +1,7 @@
 import ExcelJS from 'exceljs'
 import { and, gte, lt, desc } from 'drizzle-orm'
 import { receipts } from '~~/server/db/schema'
+import { uploadExcelToDrive } from '~~/server/utils/google-drive'
 
 const currencyFormat = '#,##0.00 "€"'
 const dateFormat = 'dd.mm.yyyy'
@@ -212,11 +213,15 @@ export default defineEventHandler(async (event) => {
   zahllastRow.font = { bold: true }
 
   // Generate buffer
-  const buffer = await workbook.xlsx.writeBuffer()
+  const buffer = Buffer.from(await workbook.xlsx.writeBuffer())
+  const fileName = `EA-Rechnung-${year}.xlsx`
+
+  // Save to Google Drive (non-blocking)
+  uploadExcelToDrive({ buffer, fileName, year: String(year) }).catch(() => {})
 
   setResponseHeaders(event, {
     'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'Content-Disposition': `attachment; filename="EA-Rechnung-${year}.xlsx"`
+    'Content-Disposition': `attachment; filename="${fileName}"`
   })
 
   return buffer
