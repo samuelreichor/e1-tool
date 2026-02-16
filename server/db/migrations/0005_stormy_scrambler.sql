@@ -1,0 +1,1 @@
+ALTER TABLE "email_logs" ADD COLUMN "template_key" text;

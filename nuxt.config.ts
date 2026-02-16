@@ -21,6 +21,10 @@ export default defineNuxtConfig({
     smtpUser: '',
     smtpPass: '',
     smtpFrom: '',
+    googleDriveFolderId: '',
+    googleClientId: '',
+    googleClientSecret: '',
+    googleRefreshToken: '',
     oauth: {
       github: {
         clientId: '',

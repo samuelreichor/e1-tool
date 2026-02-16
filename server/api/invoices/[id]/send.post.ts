@@ -78,6 +78,12 @@ export default defineEventHandler(async (event) => {
       }]
     })
 
+    await uploadPdfToDrive({
+      buffer: pdfBuffer,
+      fileName: `${invoice.invoiceNumber}.pdf`,
+      issueDate: invoice.issueDate!
+    })
+
     await db.insert(emailLogs).values({
       invoiceId: id,
       recipient,
