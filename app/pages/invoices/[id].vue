@@ -88,14 +88,14 @@ function templateLabel(key: string) {
 
 <template>
   <div v-if="invoice" class="p-4 max-w-4xl mx-auto">
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
       <div class="flex items-center gap-3">
         <h2 class="text-lg font-semibold">
           {{ invoice.invoiceNumber }}
         </h2>
         <InvoiceStatusBadge :status="invoice.status" />
       </div>
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <USelect
           :model-value="invoice.status"
           :items="statusOptions"
@@ -105,34 +105,38 @@ function templateLabel(key: string) {
         />
         <UButton
           icon="i-lucide-eye"
-          label="Vorschau"
           variant="outline"
           size="sm"
           @click="previewPdf"
-        />
+        >
+          <span class="hidden sm:inline">Vorschau</span>
+        </UButton>
         <UButton
           icon="i-lucide-download"
-          label="PDF"
           variant="outline"
           size="sm"
           @click="downloadPdf"
-        />
+        >
+          <span class="hidden sm:inline">PDF</span>
+        </UButton>
         <UButton
           icon="i-lucide-send"
-          label="Senden"
           variant="outline"
           size="sm"
           @click="showSend = true"
-        />
+        >
+          <span class="hidden sm:inline">Senden</span>
+        </UButton>
         <UButton
           v-if="invoice.status === 'draft'"
           icon="i-lucide-trash-2"
-          label="Löschen"
           variant="outline"
           color="error"
           size="sm"
           @click="showDelete = true"
-        />
+        >
+          <span class="hidden sm:inline">Löschen</span>
+        </UButton>
       </div>
     </div>
 
@@ -147,7 +151,7 @@ function templateLabel(key: string) {
         <div
           v-for="log in emailLogs"
           :key="log.id"
-          class="flex items-center justify-between text-sm p-2 rounded border border-default"
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm p-2 rounded border border-default gap-1"
         >
           <div class="flex items-center gap-2">
             <UIcon

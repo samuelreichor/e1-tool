@@ -80,17 +80,18 @@ async function previewPdf(invoice: InvoiceListItem) {
 
 <template>
   <div class="flex flex-col gap-4 p-4">
-    <div class="flex items-center justify-between gap-4">
+    <div class="flex flex-wrap items-center justify-between gap-4">
       <USelect
         v-model="statusFilter"
         :items="statusOptions"
         value-key="value"
         placeholder="Status filtern"
-        class="w-48"
+        class="w-full sm:w-48"
       />
-      <UButton icon="i-lucide-plus" label="Neue Rechnung" to="/invoices/new" />
+      <UButton icon="i-lucide-plus" label="Neue Rechnung" to="/invoices/new" class="w-full sm:w-auto" />
     </div>
 
+    <div class="overflow-x-auto">
     <UTable :data="invoicesList || []" :columns="columns" class="w-full">
       <template #invoiceNumber-cell="{ row }">
         <NuxtLink :to="`/invoices/${row.original.id}`" class="text-primary hover:underline font-medium">
@@ -149,6 +150,7 @@ async function previewPdf(invoice: InvoiceListItem) {
         </div>
       </template>
     </UTable>
+    </div>
 
     <DeleteConfirmModal
       v-model:open="showDelete"

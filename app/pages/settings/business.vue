@@ -97,7 +97,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <UInput v-model="state.street" class="w-full" />
       </UFormField>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <UFormField label="PLZ" name="zip">
           <UInput v-model="state.zip" class="w-full" />
         </UFormField>
@@ -112,7 +112,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
       <USeparator />
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <UFormField label="E-Mail" name="email">
           <UInput v-model="state.email" type="email" class="w-full" />
         </UFormField>
@@ -121,7 +121,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         </UFormField>
       </div>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <UFormField label="Steuernummer" name="taxId">
           <UInput v-model="state.taxId" class="w-full" />
         </UFormField>
@@ -136,7 +136,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         <UInput v-model="state.bankName" class="w-full" />
       </UFormField>
 
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <UFormField label="IBAN" name="iban">
           <UInput v-model="state.iban" class="w-full" />
         </UFormField>

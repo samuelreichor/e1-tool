@@ -52,16 +52,17 @@ async function confirmDelete() {
 
 <template>
   <div class="flex flex-col gap-4 p-4">
-    <div class="flex items-center justify-between gap-4">
+    <div class="flex flex-wrap items-center justify-between gap-4">
       <UInput
         v-model="search"
         icon="i-lucide-search"
         placeholder="Kunden suchen..."
-        class="max-w-xs"
+        class="w-full sm:max-w-xs"
       />
-      <UButton icon="i-lucide-plus" label="Neuer Kunde" @click="openCreate" />
+      <UButton icon="i-lucide-plus" label="Neuer Kunde" class="w-full sm:w-auto" @click="openCreate" />
     </div>
 
+    <div class="overflow-x-auto">
     <UTable :data="clients || []" :columns="columns" class="w-full">
       <template #name-cell="{ row }">
         <NuxtLink :to="`/clients/${row.original.id}`" class="text-primary hover:underline font-medium">
@@ -99,6 +100,7 @@ async function confirmDelete() {
         </div>
       </template>
     </UTable>
+    </div>
 
     <ClientFormModal v-model:open="showForm" @saved="refresh" />
     <DeleteConfirmModal

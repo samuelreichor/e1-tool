@@ -221,7 +221,7 @@ async function onSubmit() {
     <USeparator />
 
     <div class="flex justify-end">
-      <div class="w-64 flex flex-col gap-1 text-sm">
+      <div class="w-full sm:w-64 flex flex-col gap-1 text-sm">
         <div class="flex justify-between">
           <span class="text-muted">Netto</span>
           <span class="tabular-nums">{{ formatCurrency(netTotal) }}</span>

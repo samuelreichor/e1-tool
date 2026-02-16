@@ -39,7 +39,8 @@ const vatRateOptions = [
 
 <template>
   <div class="flex flex-col gap-3">
-    <div class="grid grid-cols-[1fr_80px_100px_80px_100px_40px] gap-2 text-sm font-medium text-muted">
+    <!-- Desktop grid -->
+    <div class="hidden lg:grid grid-cols-[1fr_80px_100px_80px_100px_40px] gap-2 text-sm font-medium text-muted">
       <span>Beschreibung</span>
       <span class="text-right">Menge</span>
       <span class="text-right">Einzelpreis</span>
@@ -50,8 +51,8 @@ const vatRateOptions = [
 
     <div
       v-for="(item, index) in items"
-      :key="index"
-      class="grid grid-cols-[1fr_80px_100px_80px_100px_40px] gap-2 items-start"
+      :key="'desktop-' + index"
+      class="hidden lg:grid grid-cols-[1fr_80px_100px_80px_100px_40px] gap-2 items-start"
     >
       <UInput v-model="item.description" placeholder="Beschreibung" size="sm" />
       <UInput
@@ -88,6 +89,55 @@ const vatRateOptions = [
         :disabled="items.length <= 1"
         @click="removeItem(index)"
       />
+    </div>
+
+    <!-- Mobile card layout -->
+    <div
+      v-for="(item, index) in items"
+      :key="'mobile-' + index"
+      class="lg:hidden flex flex-col gap-2 p-3 rounded border border-default"
+    >
+      <UInput v-model="item.description" placeholder="Beschreibung" size="sm" />
+      <div class="grid grid-cols-3 gap-2">
+        <UFormField label="Menge" class="text-xs">
+          <UInput
+            v-model.number="item.quantity"
+            type="number"
+            step="0.01"
+            min="0"
+            size="sm"
+          />
+        </UFormField>
+        <UFormField label="Einzelpreis" class="text-xs">
+          <UInput
+            v-model.number="item.unitPrice"
+            type="number"
+            step="0.01"
+            min="0"
+            size="sm"
+          />
+        </UFormField>
+        <UFormField label="USt %" class="text-xs">
+          <USelect
+            :model-value="getVatRate(item)"
+            :items="vatRateOptions"
+            value-key="value"
+            size="sm"
+            @update:model-value="setVatRate(item, $event)"
+          />
+        </UFormField>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-sm font-medium tabular-nums">{{ lineTotal(item) }} €</span>
+        <UButton
+          icon="i-lucide-x"
+          variant="ghost"
+          color="error"
+          size="xs"
+          :disabled="items.length <= 1"
+          @click="removeItem(index)"
+        />
+      </div>
     </div>
 
     <UButton
