@@ -95,6 +95,32 @@ declare global {
     dateSold: string | null
   }
 
+  interface Receipt {
+    id: number
+    bookingDate: string
+    valueDate: string | null
+    partnerName: string | null
+    partnerIban: string | null
+    type: string | null
+    paymentReference: string | null
+    amountEur: string
+    originalAmount: string | null
+    originalCurrency: string | null
+    exchangeRate: string | null
+    category: string
+    excluded: number
+    createdAt: string
+  }
+
+  interface IbanCategory {
+    id: number
+    iban: string
+    name: string
+    excluded: number
+    matchType: string
+    createdAt: string
+  }
+
   interface LineItem {
     description: string
     quantity: number

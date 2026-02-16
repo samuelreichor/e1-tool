@@ -1,0 +1,1 @@
+ALTER TABLE "iban_categories" ADD COLUMN "match_type" text DEFAULT 'iban' NOT NULL;

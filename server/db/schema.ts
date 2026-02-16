@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, serial, text, integer, numeric, date, timestamp } from 'drizzle-orm/pg-core'
+import { pgTable, serial, text, integer, numeric, date, timestamp, unique } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -98,6 +98,34 @@ export const pluginSales = pgTable('plugin_sales', {
   dateSold: timestamp('date_sold'),
   createdAt: timestamp('created_at').defaultNow().notNull()
 })
+
+export const ibanCategories = pgTable('iban_categories', {
+  id: serial('id').primaryKey(),
+  iban: text('iban').notNull().unique(),
+  name: text('name').notNull(),
+  excluded: integer('excluded').default(0).notNull(),
+  matchType: text('match_type').default('iban').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
+})
+
+export const receipts = pgTable('receipts', {
+  id: serial('id').primaryKey(),
+  bookingDate: date('booking_date').notNull(),
+  valueDate: date('value_date'),
+  partnerName: text('partner_name'),
+  partnerIban: text('partner_iban'),
+  type: text('type'),
+  paymentReference: text('payment_reference'),
+  amountEur: numeric('amount_eur', { precision: 12, scale: 2 }).notNull(),
+  originalAmount: numeric('original_amount', { precision: 12, scale: 2 }),
+  originalCurrency: text('original_currency'),
+  exchangeRate: numeric('exchange_rate', { precision: 10, scale: 6 }),
+  category: text('category').default('Sonstige').notNull(),
+  excluded: integer('excluded').default(0).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
+}, (table) => [
+  unique().on(table.bookingDate, table.partnerName, table.amountEur, table.paymentReference).nullsNotDistinct()
+])
 
 // Relations
 export const clientsRelations = relations(clients, ({ many }) => ({

@@ -57,6 +57,34 @@
       "when": 1771270949567,
       "tag": "0007_tricky_spiral",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1771273860742,
+      "tag": "0008_demonic_devos",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1771274488713,
+      "tag": "0009_freezing_sunset_bain",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1771274983057,
+      "tag": "0010_rich_ravenous",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1771275390491,
+      "tag": "0011_rapid_marvel_boy",
+      "breakpoints": true
     }
   ]
 }
