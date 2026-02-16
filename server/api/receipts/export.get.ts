@@ -2,8 +2,8 @@ import ExcelJS from 'exceljs'
 import { and, gte, lt, desc } from 'drizzle-orm'
 import { receipts } from '~~/server/db/schema'
 
-const currencyFormat = '#.##0,00 €'
-const dateFormat = 'DD.MM.YYYY'
+const currencyFormat = '#,##0.00 "€"'
+const dateFormat = 'dd.mm.yyyy'
 
 function applyHeaderStyle(row: ExcelJS.Row) {
   row.font = { bold: true }
