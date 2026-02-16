@@ -101,6 +101,53 @@ declare global {
     unitPrice: number
     vatRate: number
   }
+
+  interface DashboardMonthlyRevenue {
+    invoicesNet: number
+    invoicesGross: number
+    pluginSalesNet: number
+    totalNet: number
+    invoiceCount: number
+    pluginSaleCount: number
+  }
+
+  interface DashboardMonthTrend {
+    month: string
+    label: string
+    invoicesNet: number
+    pluginSalesNet: number
+    totalNet: number
+  }
+
+  interface DashboardRecentInvoice {
+    id: number
+    invoiceNumber: string
+    clientName: string | null
+    grossTotal: string | null
+    status: string
+    issueDate: string | null
+  }
+
+  interface DashboardRecentPluginSale {
+    id: number
+    pluginName: string
+    edition: string
+    renewal: number
+    netAmountEur: string | null
+    dateSold: string | null
+  }
+
+  interface DashboardStats {
+    currentMonth: DashboardMonthlyRevenue
+    previousMonth: DashboardMonthlyRevenue
+    yearToDate: DashboardMonthlyRevenue
+    changePercent: number | null
+    trend: DashboardMonthTrend[]
+    recentInvoices: DashboardRecentInvoice[]
+    recentPluginSales: DashboardRecentPluginSale[]
+    openInvoicesTotal: number
+    openInvoicesCount: number
+  }
 }
 
 export {}

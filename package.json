@@ -19,6 +19,7 @@
     "@nuxt/ui": "^4.4.0",
     "@vueuse/core": "^14.2.1",
     "@vueuse/nuxt": "^14.2.1",
+    "chart.js": "^4.5.1",
     "drizzle-orm": "^0.44.0",
     "googleapis": "^171.4.0",
     "nodemailer": "^8.0.1",
@@ -28,6 +29,7 @@
     "postgres": "^3.4.5",
     "tailwindcss": "^4.1.18",
     "vue": "^3.5.28",
+    "vue-chartjs": "^5.3.3",
     "zod": "^4.3.6"
   },
   "devDependencies": {
