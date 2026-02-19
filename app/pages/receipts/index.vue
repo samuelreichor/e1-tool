@@ -283,8 +283,19 @@ async function confirmDelete() {
                   <span>Privat (ausschließen)</span>
                 </label>
                 <div class="flex justify-end gap-1">
-                  <UButton size="xs" variant="outline" color="neutral" label="Abbrechen" @click="categoryPopoverOpen = null" />
-                  <UButton size="xs" label="Speichern" :loading="categoryLoading" @click="saveCategory(row.original)" />
+                  <UButton
+                    size="xs"
+                    variant="outline"
+                    color="neutral"
+                    label="Abbrechen"
+                    @click="categoryPopoverOpen = null"
+                  />
+                  <UButton
+                    size="xs"
+                    label="Speichern"
+                    :loading="categoryLoading"
+                    @click="saveCategory(row.original)"
+                  />
                 </div>
               </div>
             </template>

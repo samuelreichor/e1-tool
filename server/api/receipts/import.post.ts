@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
     else ibanMatchMap.set(c.iban, entry)
   }
 
-  const rows = lines.slice(1).map(line => {
+  const rows = lines.slice(1).map((line) => {
     const fields = parseCsvLine(line)
     const partnerIban = fields[partnerIbanIdx] || null
     const partnerName = fields[partnerNameIdx] || null

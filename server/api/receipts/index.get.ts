@@ -1,4 +1,4 @@
-import { eq, desc, and, gte, lt } from 'drizzle-orm'
+import { desc, and, gte, lt } from 'drizzle-orm'
 import { receipts } from '~~/server/db/schema'
 
 export default defineEventHandler(async (event) => {

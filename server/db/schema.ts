@@ -123,7 +123,7 @@ export const receipts = pgTable('receipts', {
   category: text('category').default('Sonstige').notNull(),
   excluded: integer('excluded').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull()
-}, (table) => [
+}, table => [
   unique().on(table.bookingDate, table.partnerName, table.amountEur, table.paymentReference).nullsNotDistinct()
 ])
 
