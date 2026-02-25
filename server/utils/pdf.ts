@@ -168,6 +168,7 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<Buffer> {
     if (biz.bankName) bankLines.push({ text: biz.bankName, fontSize: 8, color: TEXT_MUTED })
     if (biz.iban) bankLines.push({ text: `IBAN: ${biz.iban}`, fontSize: 8, color: TEXT_MUTED })
     if (biz.bic) bankLines.push({ text: `BIC: ${biz.bic}`, fontSize: 8, color: TEXT_MUTED })
+    bankLines.push({ text: `Zahlungsreferenz: ${data.invoiceNumber}`, fontSize: 8, color: TEXT_MUTED, bold: true, margin: [0, 3, 0, 0] } as Content)
     footerColumns.push({ stack: bankLines, width: '*' } as Content)
   }
 

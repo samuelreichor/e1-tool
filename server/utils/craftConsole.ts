@@ -70,7 +70,7 @@ async function login(): Promise<CraftSession> {
     method: 'POST',
     headers: {
       ...headers,
-      'Cookie': cookies
+      Cookie: cookies
     },
     body: formData,
     redirect: 'manual'
@@ -90,7 +90,7 @@ async function getOrgId(session: CraftSession): Promise<string> {
   const res = await fetch(`${BASE_URL}/orgs`, {
     headers: {
       ...session.headers,
-      'Cookie': session.cookies
+      Cookie: session.cookies
     }
   })
 
@@ -128,7 +128,7 @@ async function fetchSalesPage(session: CraftSession, orgId: string, page: number
   const res = await fetch(url, {
     headers: {
       ...session.headers,
-      'Cookie': session.cookies
+      Cookie: session.cookies
     }
   })
 
