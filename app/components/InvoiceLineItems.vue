@@ -5,6 +5,22 @@ const props = defineProps<{
 
 const items = defineModel<LineItem[]>('items', { required: true })
 
+const showImportModal = ref(false)
+
+function onImport(importedItems: LineItem[]) {
+  // Remove empty placeholder items before appending
+  const hasOnlyEmpty = items.value.length === 1
+    && !items.value[0]!.description
+    && items.value[0]!.quantity === 1
+    && items.value[0]!.unitPrice === (props.defaultUnitPrice || 0)
+
+  if (hasOnlyEmpty) {
+    items.value = importedItems
+  } else {
+    items.value.push(...importedItems)
+  }
+}
+
 function addItem() {
   items.value.push({
     description: '',
@@ -140,13 +156,27 @@ const vatRateOptions = [
       </div>
     </div>
 
-    <UButton
-      icon="i-lucide-plus"
-      variant="outline"
-      label="Position hinzufügen"
-      size="sm"
-      class="self-start"
-      @click="addItem"
+    <div class="flex gap-2">
+      <UButton
+        icon="i-lucide-plus"
+        variant="outline"
+        label="Position hinzufügen"
+        size="sm"
+        @click="addItem"
+      />
+      <UButton
+        icon="i-lucide-upload"
+        variant="outline"
+        label="Importieren"
+        size="sm"
+        @click="showImportModal = true"
+      />
+    </div>
+
+    <ImportLineItemsModal
+      v-model:open="showImportModal"
+      :default-unit-price="defaultUnitPrice"
+      @import="onImport"
     />
   </div>
 </template>
