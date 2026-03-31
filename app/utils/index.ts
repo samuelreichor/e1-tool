@@ -6,6 +6,7 @@ export const receiptCategories = [
   { label: 'Hardware', value: 'Hardware' },
   { label: 'Fortbildung', value: 'Fortbildung' },
   { label: 'Bewirtung', value: 'Bewirtung' },
+  { label: 'Bürobedarf', value: 'Bürobedarf' },
   { label: 'Steuerberatung', value: 'Steuerberatung' },
   { label: 'Versicherungen', value: 'Versicherungen' },
   { label: 'Sonstige', value: 'Sonstige' }
