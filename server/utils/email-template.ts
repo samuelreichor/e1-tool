@@ -33,11 +33,11 @@ ${company}`
     case 'friendly':
       return `Hallo,
 
-im Anhang findest du die Rechnung ${data.invoiceNumber}${month ? ` vom ${month}` : ''}.
+im Anhang findet ihr die Rechnung ${data.invoiceNumber}${month ? ` vom ${month}` : ''}.
 
-Bei Fragen melde dich gerne!
+Bei Fragen melde euch gerne!
 
-Beste Grüße
+Liebe Grüße
 ${company}`
 
     case 'reminder':
@@ -45,9 +45,9 @@ ${company}`
 
 kurze Erinnerung: die Rechnung ${data.invoiceNumber}${month ? ` vom ${month}` : ''} ist noch offen.
 
-Wäre super, wenn du den Betrag bei Gelegenheit überweisen könntest. Falls die Zahlung schon raus ist, kannst du diese Nachricht einfach ignorieren.
+Wäre super, wenn ihr den Betrag bei Gelegenheit überweisen könntet. Falls die Zahlung schon raus ist, könnt ihr diese Nachricht einfach ignorieren.
 
-Beste Grüße
+Liebe Grüße
 ${company}`
   }
 }

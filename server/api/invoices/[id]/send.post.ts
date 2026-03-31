@@ -81,26 +81,6 @@ export default defineEventHandler(async (event) => {
         contentDisposition: 'attachment'
       }]
     })
-
-    await uploadPdfToDrive({
-      buffer: pdfBuffer,
-      fileName: `${invoice.invoiceNumber}.pdf`,
-      issueDate: invoice.issueDate!
-    })
-
-    await db.insert(emailLogs).values({
-      invoiceId: id,
-      recipient,
-      subject,
-      templateKey: templateKey || null,
-      status: 'sent'
-    })
-
-    if (invoice.status === 'draft') {
-      await db.update(invoices).set({ status: 'sent' }).where(eq(invoices.id, id))
-    }
-
-    return { success: true }
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : 'Unbekannter Fehler'
 
@@ -119,4 +99,26 @@ export default defineEventHandler(async (event) => {
       data: { message: errorMessage }
     })
   }
+
+  uploadPdfToDrive({
+    buffer: pdfBuffer,
+    fileName: `${invoice.invoiceNumber}.pdf`,
+    issueDate: invoice.issueDate!
+  }).catch((e) => {
+    console.error('Google Drive Upload fehlgeschlagen:', e instanceof Error ? e.message : e)
+  })
+
+  await db.insert(emailLogs).values({
+    invoiceId: id,
+    recipient,
+    subject,
+    templateKey: templateKey || null,
+    status: 'sent'
+  })
+
+  if (invoice.status === 'draft') {
+    await db.update(invoices).set({ status: 'sent' }).where(eq(invoices.id, id))
+  }
+
+  return { success: true }
 })
