@@ -1,0 +1,1 @@
+ALTER TABLE "receipts" ADD COLUMN "vat_rate" integer DEFAULT 20 NOT NULL;

@@ -107,6 +107,7 @@ declare global {
     originalAmount: string | null
     originalCurrency: string | null
     exchangeRate: string | null
+    vatRate: number
     category: string
     excluded: number
     createdAt: string

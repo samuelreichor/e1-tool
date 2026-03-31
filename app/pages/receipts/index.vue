@@ -7,6 +7,9 @@ const exporting = ref(false)
 const showDelete = ref(false)
 const deleteLoading = ref(false)
 const deleteReceipt = ref<Receipt | null>(null)
+const showCreate = ref(false)
+const showDetail = ref(false)
+const detailReceipt = ref<Receipt | null>(null)
 
 // Category popover state
 const categoryPopoverOpen = ref<number | null>(null)
@@ -14,13 +17,53 @@ const categoryInput = ref('')
 const categoryExcluded = ref(false)
 const categoryLoading = ref(false)
 
+const month = ref(0)
+const categoryFilter = ref('all')
+
 const yearOptions = Array.from({ length: 5 }, (_, i) => {
   const y = currentYear - i
   return { label: String(y), value: y }
 })
 
-const { data: receipts, refresh } = useLazyFetch<Receipt[]>('/api/receipts', {
+const monthOptions = [
+  { label: 'Alle Monate', value: 0 },
+  { label: 'Jänner', value: 1 },
+  { label: 'Februar', value: 2 },
+  { label: 'März', value: 3 },
+  { label: 'April', value: 4 },
+  { label: 'Mai', value: 5 },
+  { label: 'Juni', value: 6 },
+  { label: 'Juli', value: 7 },
+  { label: 'August', value: 8 },
+  { label: 'September', value: 9 },
+  { label: 'Oktober', value: 10 },
+  { label: 'November', value: 11 },
+  { label: 'Dezember', value: 12 }
+]
+
+const { data: receiptsRaw, refresh } = useLazyFetch<Receipt[]>('/api/receipts', {
   query: computed(() => ({ year: year.value }))
+})
+
+const receipts = computed(() => {
+  if (!receiptsRaw.value) return []
+  return receiptsRaw.value.filter((r) => {
+    if (month.value > 0) {
+      const m = new Date(r.bookingDate).getMonth() + 1
+      if (m !== month.value) return false
+    }
+    if (categoryFilter.value !== 'all' && r.category !== categoryFilter.value) return false
+    return true
+  })
+})
+
+const activeCategoryOptions = computed(() => {
+  if (!receiptsRaw.value) return []
+  const cats = new Set(receiptsRaw.value.map(r => r.category))
+  return [
+    { label: 'Alle Kategorien', value: 'all' },
+    ...Array.from(cats).sort().map(c => ({ label: c, value: c }))
+  ]
 })
 
 const { data: categories, refresh: refreshCategories } = useLazyFetch<IbanCategory[]>('/api/iban-categories')
@@ -66,7 +109,6 @@ const columns = [
 ]
 
 const summary = computed(() => {
-  if (!receipts.value) return { einnahmen: 0, ausgaben: 0, saldo: 0 }
   let einnahmen = 0
   let ausgaben = 0
   for (const r of receipts.value) {
@@ -182,18 +224,42 @@ async function confirmDelete() {
     deleteLoading.value = false
   }
 }
+
+function openDetail(receipt: Receipt) {
+  detailReceipt.value = receipt
+  showDetail.value = true
+}
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-4">
-    <!-- Header: Upload, Export, Year Filter -->
-    <div class="flex flex-wrap items-center justify-between gap-4">
-      <div class="flex flex-wrap items-center gap-2">
+  <div class="flex flex-col gap-4">
+    <!-- Actions -->
+    <div class="flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <UButton
+          icon="i-lucide-plus"
+          class="sm:hidden"
+          @click="showCreate = true"
+        />
+        <UButton
+          icon="i-lucide-plus"
+          label="Beleg anlegen"
+          class="hidden sm:flex"
+          @click="showCreate = true"
+        />
+        <UButton
+          icon="i-lucide-upload"
+          variant="outline"
+          :loading="uploading"
+          class="sm:hidden"
+          @click="($refs.fileInput as HTMLInputElement).click()"
+        />
         <UButton
           icon="i-lucide-upload"
           label="CSV Import"
+          variant="outline"
           :loading="uploading"
-          class="relative w-full sm:w-auto"
+          class="hidden sm:flex"
           @click="($refs.fileInput as HTMLInputElement).click()"
         />
         <input
@@ -205,10 +271,17 @@ async function confirmDelete() {
         >
         <UButton
           icon="i-lucide-download"
+          variant="outline"
+          :loading="exporting"
+          class="sm:hidden"
+          @click="exportExcel"
+        />
+        <UButton
+          icon="i-lucide-download"
           label="Excel Export"
           variant="outline"
           :loading="exporting"
-          class="w-full sm:w-auto"
+          class="hidden sm:flex"
           @click="exportExcel"
         />
       </div>
@@ -216,17 +289,33 @@ async function confirmDelete() {
         v-model="year"
         :items="yearOptions"
         value-key="value"
-        class="w-full sm:w-36"
+        class="w-28"
+      />
+    </div>
+
+    <!-- Filter -->
+    <div class="grid grid-cols-2 sm:flex sm:items-center gap-2">
+      <USelect
+        v-model="month"
+        :items="monthOptions"
+        value-key="value"
+        class="sm:w-36"
+      />
+      <USelect
+        v-model="categoryFilter"
+        :items="activeCategoryOptions"
+        value-key="value"
+        class="sm:w-44"
       />
     </div>
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
       <div class="rounded-lg border border-default p-4">
         <p class="text-sm text-dimmed">
           Einnahmen
         </p>
-        <p class="text-2xl font-semibold tabular-nums text-green-500">
+        <p class="text-base sm:text-2xl font-semibold tabular-nums text-green-500">
           {{ formatCurrency(summary.einnahmen) }}
         </p>
       </div>
@@ -234,7 +323,7 @@ async function confirmDelete() {
         <p class="text-sm text-dimmed">
           Ausgaben
         </p>
-        <p class="text-2xl font-semibold tabular-nums text-red-500">
+        <p class="text-base sm:text-2xl font-semibold tabular-nums text-red-500">
           {{ formatCurrency(summary.ausgaben) }}
         </p>
       </div>
@@ -242,7 +331,7 @@ async function confirmDelete() {
         <p class="text-sm text-dimmed">
           Saldo
         </p>
-        <p class="text-2xl font-semibold tabular-nums" :class="summary.saldo >= 0 ? 'text-green-500' : 'text-red-500'">
+        <p class="text-base sm:text-2xl font-semibold tabular-nums" :class="summary.saldo >= 0 ? 'text-green-500' : 'text-red-500'">
           {{ formatCurrency(summary.saldo) }}
         </p>
       </div>
@@ -252,10 +341,10 @@ async function confirmDelete() {
     <div class="overflow-x-auto">
       <UTable :data="receipts || []" :columns="columns" class="w-full">
         <template #bookingDate-cell="{ row }">
-          <span :class="{ 'opacity-40': row.original.excluded }">{{ formatDate(row.original.bookingDate) }}</span>
+          <span class="cursor-pointer" :class="{ 'opacity-40': row.original.excluded }" @click="openDetail(row.original)">{{ formatDate(row.original.bookingDate) }}</span>
         </template>
         <template #partnerName-cell="{ row }">
-          <span class="font-medium" :class="{ 'opacity-40': row.original.excluded }">{{ row.original.partnerName || '-' }}</span>
+          <span class="font-medium cursor-pointer" :class="{ 'opacity-40': row.original.excluded }" @click="openDetail(row.original)">{{ row.original.partnerName || '-' }}</span>
         </template>
         <template #category-cell="{ row }">
           <UPopover v-if="row.original.partnerIban || row.original.partnerName" :open="categoryPopoverOpen === row.original.id" @update:open="(val: boolean) => { if (!val) categoryPopoverOpen = null }">
@@ -271,12 +360,12 @@ async function confirmDelete() {
                 <p class="text-xs text-dimmed truncate">
                   {{ row.original.partnerIban || row.original.partnerName }}
                 </p>
-                <UInput
+                <USelect
                   v-model="categoryInput"
-                  placeholder="Kategorie-Name"
+                  :items="receiptCategories"
+                  value-key="value"
                   size="sm"
                   class="w-full"
-                  @keydown.enter="saveCategory(row.original)"
                 />
                 <label class="flex items-center gap-2 text-sm cursor-pointer">
                   <input v-model="categoryExcluded" type="checkbox" class="rounded">
@@ -308,12 +397,13 @@ async function confirmDelete() {
           />
         </template>
         <template #paymentReference-cell="{ row }">
-          <span class="text-sm text-dimmed max-w-xs truncate block" :class="{ 'opacity-40': row.original.excluded }">{{ row.original.paymentReference || '-' }}</span>
+          <span class="text-sm text-dimmed max-w-xs truncate block cursor-pointer" :class="{ 'opacity-40': row.original.excluded }" @click="openDetail(row.original)">{{ row.original.paymentReference || '-' }}</span>
         </template>
         <template #amountEur-cell="{ row }">
           <span
-            class="tabular-nums font-medium"
+            class="tabular-nums font-medium cursor-pointer"
             :class="[parseFloat(row.original.amountEur) >= 0 ? 'text-green-500' : 'text-red-500', { 'opacity-40': row.original.excluded }]"
+            @click="openDetail(row.original)"
           >
             {{ formatCurrency(row.original.amountEur) }}
           </span>
@@ -351,6 +441,17 @@ async function confirmDelete() {
       :description="`Möchten Sie den Beleg von '${deleteReceipt?.partnerName || 'Unbekannt'}' über ${deleteReceipt ? formatCurrency(deleteReceipt.amountEur) : ''} wirklich löschen?`"
       :loading="deleteLoading"
       @confirm="confirmDelete"
+    />
+
+    <CreateReceiptModal
+      v-model:open="showCreate"
+      @created="refresh"
+    />
+
+    <ReceiptDetailModal
+      v-model:open="showDetail"
+      :receipt="detailReceipt"
+      @updated="refresh"
     />
   </div>
 </template>

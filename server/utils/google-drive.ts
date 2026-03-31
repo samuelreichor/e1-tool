@@ -95,6 +95,59 @@ export async function uploadPdfToDrive({ buffer, fileName, issueDate }: {
   })
 }
 
+const germanMonths = [
+  'Jänner', 'Februar', 'März', 'April', 'Mai', 'Juni',
+  'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'
+]
+
+export async function uploadReceiptPdfToDrive({ buffer, fileName, bookingDate }: {
+  buffer: Buffer
+  fileName: string
+  bookingDate: string
+}) {
+  const date = new Date(bookingDate)
+  const year = date.getFullYear().toString()
+  const month = germanMonths[date.getMonth()]!
+
+  const config = useRuntimeConfig()
+  const drive = getDriveClient()
+
+  const yearFolderId = await findOrCreateFolder(drive, year, config.googleDriveFolderId)
+  const belegeFolderId = await findOrCreateFolder(drive, '01-belege', yearFolderId)
+  const monthFolderId = await findOrCreateFolder(drive, month, belegeFolderId)
+
+  const existing = await drive.files.list({
+    q: `name = '${fileName}' and '${monthFolderId}' in parents and trashed = false`,
+    fields: 'files(id)'
+  })
+
+  const media = {
+    mimeType: 'application/pdf',
+    body: Readable.from(buffer)
+  }
+
+  const existingFileId = existing.data.files?.[0]?.id
+  if (existingFileId) {
+    const response = await drive.files.update({
+      fileId: existingFileId,
+      media,
+      fields: 'id,name'
+    })
+    return response.data
+  }
+
+  const response = await drive.files.create({
+    requestBody: {
+      name: fileName,
+      parents: [monthFolderId]
+    },
+    media,
+    fields: 'id,name'
+  })
+
+  return response.data
+}
+
 export async function uploadExcelToDrive({ buffer, fileName, year }: {
   buffer: Buffer
   fileName: string

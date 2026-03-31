@@ -72,7 +72,8 @@ export default defineEventHandler(async (event) => {
 
   einnahmen.forEach((r, i) => {
     const brutto = parseFloat(r.amountEur)
-    const netto = brutto / 1.20
+    const vatRate = r.vatRate / 100
+    const netto = vatRate > 0 ? brutto / (1 + vatRate) : brutto
     const ust = brutto - netto
     const row = wsEin.addRow({
       datum: new Date(r.bookingDate),
@@ -125,7 +126,8 @@ export default defineEventHandler(async (event) => {
 
   ausgaben.forEach((r, i) => {
     const brutto = Math.abs(parseFloat(r.amountEur))
-    const netto = brutto / 1.20
+    const vatRate = r.vatRate / 100
+    const netto = vatRate > 0 ? brutto / (1 + vatRate) : brutto
     const vorsteuer = brutto - netto
     const row = wsAus.addRow({
       datum: new Date(r.bookingDate),
@@ -170,12 +172,24 @@ export default defineEventHandler(async (event) => {
   ]
   applyHeaderStyle(wsSum.getRow(1))
 
-  const einnahmenBrutto = einnahmen.reduce((sum, r) => sum + parseFloat(r.amountEur), 0)
-  const einnahmenNetto = einnahmenBrutto / 1.20
+  let einnahmenBrutto = 0
+  let einnahmenNetto = 0
+  for (const r of einnahmen) {
+    const brutto = parseFloat(r.amountEur)
+    const vatRate = r.vatRate / 100
+    einnahmenBrutto += brutto
+    einnahmenNetto += vatRate > 0 ? brutto / (1 + vatRate) : brutto
+  }
   const einnahmenUst = einnahmenBrutto - einnahmenNetto
 
-  const ausgabenBrutto = ausgaben.reduce((sum, r) => sum + Math.abs(parseFloat(r.amountEur)), 0)
-  const ausgabenNetto = ausgabenBrutto / 1.20
+  let ausgabenBrutto = 0
+  let ausgabenNetto = 0
+  for (const r of ausgaben) {
+    const brutto = Math.abs(parseFloat(r.amountEur))
+    const vatRate = r.vatRate / 100
+    ausgabenBrutto += brutto
+    ausgabenNetto += vatRate > 0 ? brutto / (1 + vatRate) : brutto
+  }
   const ausgabenVorsteuer = ausgabenBrutto - ausgabenNetto
 
   const addSumRow = (label: string, netto: number, brutto: number) => {

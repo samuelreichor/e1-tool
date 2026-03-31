@@ -45,7 +45,7 @@ async function refreshSales() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-4">
+  <div class="flex flex-col gap-4">
     <div class="flex flex-wrap items-center justify-between gap-4">
       <USelect
         v-model="typeFilter"

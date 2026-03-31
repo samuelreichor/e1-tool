@@ -120,6 +120,7 @@ export const receipts = pgTable('receipts', {
   originalAmount: numeric('original_amount', { precision: 12, scale: 2 }),
   originalCurrency: text('original_currency'),
   exchangeRate: numeric('exchange_rate', { precision: 10, scale: 6 }),
+  vatRate: integer('vat_rate').default(0).notNull(),
   category: text('category').default('Sonstige').notNull(),
   excluded: integer('excluded').default(0).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull()

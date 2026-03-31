@@ -44,6 +44,19 @@ export const sendInvoiceEmailSchema = z.object({
   templateKey: z.string().optional()
 })
 
+export const receiptSchema = z.object({
+  bookingDate: z.string().min(1, 'Datum ist erforderlich'),
+  partnerName: z.string().optional(),
+  partnerIban: z.string().optional(),
+  paymentReference: z.string().optional(),
+  amountEur: z.coerce.number({ error: 'Betrag ist erforderlich' }),
+  vatRate: z.coerce.number().refine(v => v === 20 || v === 10 || v === 0, {
+    message: 'USt-Satz muss 0, 10 oder 20 sein'
+  }).optional(),
+  category: z.string().optional(),
+  excluded: z.boolean().optional()
+})
+
 export const businessSettingsSchema = z.object({
   companyName: z.string().optional(),
   street: z.string().optional(),
