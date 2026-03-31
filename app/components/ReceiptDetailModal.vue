@@ -13,6 +13,13 @@ const emit = defineEmits<{
   updated: []
 }>()
 
+const germanMonths = ['Jänner', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
+
+function driveFolder(date: string) {
+  const d = new Date(date)
+  return `${d.getFullYear()}/01-belege/${germanMonths[d.getMonth()]}/`
+}
+
 const vatRateOptions = [
   { label: '20% USt', value: 20 },
   { label: '10% USt', value: 10 },
@@ -197,7 +204,7 @@ async function uploadPdf(event: Event) {
               >
             </div>
             <p class="text-xs text-dimmed mt-1">
-              Wird gespeichert unter: {{ new Date(form.bookingDate).getFullYear() }}/01-belege/{{ ['Jänner','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][new Date(form.bookingDate).getMonth()] }}/
+              Wird gespeichert unter: {{ driveFolder(form.bookingDate) }}
             </p>
           </div>
 

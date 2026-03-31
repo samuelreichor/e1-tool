@@ -1,4 +1,11 @@
 <script setup lang="ts">
+const germanMonths = ['Jänner', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
+
+function driveFolder(date: string) {
+  const d = new Date(date)
+  return `${d.getFullYear()}/01-belege/${germanMonths[d.getMonth()]}/`
+}
+
 const open = defineModel<boolean>('open', { default: false })
 const toast = useToast()
 const loading = ref(false)
@@ -188,7 +195,7 @@ async function onSubmit() {
               >
             </div>
             <p v-if="form.bookingDate" class="text-xs text-dimmed mt-1">
-              Wird gespeichert unter: {{ new Date(form.bookingDate).getFullYear() }}/01-belege/{{ ['Jänner','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][new Date(form.bookingDate).getMonth()] }}/
+              Wird gespeichert unter: {{ driveFolder(form.bookingDate) }}
             </p>
           </div>
 

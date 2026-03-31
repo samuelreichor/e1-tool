@@ -15,7 +15,14 @@ const detailReceipt = ref<Receipt | null>(null)
 const categoryPopoverOpen = ref<number | null>(null)
 const categoryInput = ref('')
 const categoryExcluded = ref(false)
+const categoryVatRate = ref(0)
 const categoryLoading = ref(false)
+
+const vatRateOptions = [
+  { label: '0% (netto)', value: 0 },
+  { label: '10% USt', value: 10 },
+  { label: '20% USt', value: 20 }
+]
 
 const month = ref(0)
 const categoryFilter = ref('all')
@@ -182,6 +189,7 @@ function openCategoryPopover(receipt: Receipt) {
   const existing = findCategory(receipt)
   categoryInput.value = existing?.name || receipt.category
   categoryExcluded.value = existing?.excluded === 1
+  categoryVatRate.value = existing?.vatRate ?? receipt.vatRate
 }
 
 async function saveCategory(receipt: Receipt) {
@@ -192,7 +200,7 @@ async function saveCategory(receipt: Receipt) {
   try {
     await $fetch('/api/iban-categories', {
       method: 'POST',
-      body: { iban: matchKey, name: categoryInput.value.trim(), excluded: categoryExcluded.value, matchType }
+      body: { iban: matchKey, name: categoryInput.value.trim(), excluded: categoryExcluded.value, vatRate: categoryVatRate.value, matchType }
     })
     toast.add({ title: 'Kategorie gespeichert', color: 'success' })
     categoryPopoverOpen.value = null
@@ -363,6 +371,13 @@ function openDetail(receipt: Receipt) {
                 <USelect
                   v-model="categoryInput"
                   :items="receiptCategories"
+                  value-key="value"
+                  size="sm"
+                  class="w-full"
+                />
+                <USelect
+                  v-model="categoryVatRate"
+                  :items="vatRateOptions"
                   value-key="value"
                   size="sm"
                   class="w-full"

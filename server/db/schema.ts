@@ -104,6 +104,7 @@ export const ibanCategories = pgTable('iban_categories', {
   iban: text('iban').notNull().unique(),
   name: text('name').notNull(),
   excluded: integer('excluded').default(0).notNull(),
+  vatRate: integer('vat_rate').default(0).notNull(),
   matchType: text('match_type').default('iban').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull()
 })

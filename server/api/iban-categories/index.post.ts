@@ -13,15 +13,16 @@ export default defineEventHandler(async (event) => {
   const iban = body.iban.trim()
   const name = body.name.trim()
   const excluded = body.excluded ? 1 : 0
+  const vatRate = typeof body.vatRate === 'number' ? body.vatRate : 0
   const matchType = body.matchType === 'partner_name' ? 'partner_name' : 'iban'
 
   // Upsert: insert or update existing
   const [category] = await db
     .insert(ibanCategories)
-    .values({ iban, name, excluded, matchType })
+    .values({ iban, name, excluded, vatRate, matchType })
     .onConflictDoUpdate({
       target: ibanCategories.iban,
-      set: { name, excluded, matchType }
+      set: { name, excluded, vatRate, matchType }
     })
     .returning()
 
@@ -29,7 +30,7 @@ export default defineEventHandler(async (event) => {
   const matchColumn = matchType === 'partner_name' ? receipts.partnerName : receipts.partnerIban
   await db
     .update(receipts)
-    .set({ category: name, excluded })
+    .set({ category: name, excluded, vatRate })
     .where(eq(matchColumn, iban))
 
   return category

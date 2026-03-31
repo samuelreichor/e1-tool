@@ -70,10 +70,10 @@ export default defineEventHandler(async (event) => {
 
   // Load IBAN categories (split by match type)
   const categories = await db.select().from(ibanCategories)
-  const ibanMatchMap = new Map<string, { name: string, excluded: number }>()
-  const nameMatchMap = new Map<string, { name: string, excluded: number }>()
+  const ibanMatchMap = new Map<string, { name: string, excluded: number, vatRate: number }>()
+  const nameMatchMap = new Map<string, { name: string, excluded: number, vatRate: number }>()
   for (const c of categories) {
-    const entry = { name: c.name, excluded: c.excluded }
+    const entry = { name: c.name, excluded: c.excluded, vatRate: c.vatRate }
     if (c.matchType === 'partner_name') nameMatchMap.set(c.iban, entry)
     else ibanMatchMap.set(c.iban, entry)
   }
@@ -97,6 +97,7 @@ export default defineEventHandler(async (event) => {
       originalAmount: fields[origAmountIdx] || null,
       originalCurrency: fields[origCurrencyIdx] || null,
       exchangeRate: fields[exchangeRateIdx] || null,
+      vatRate: match?.vatRate ?? 0,
       category: match?.name || 'Sonstige',
       excluded: match?.excluded || 0
     }

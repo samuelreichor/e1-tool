@@ -118,6 +118,7 @@ declare global {
     iban: string
     name: string
     excluded: number
+    vatRate: number
     matchType: string
     createdAt: string
   }

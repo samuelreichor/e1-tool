@@ -16,7 +16,7 @@ const parseError = ref('')
 const fileName = ref('')
 
 const importTypeOptions = [
-  { label: 'TeamBox', value: 'teambox' },
+  { label: 'TeamBox', value: 'teambox' }
 ]
 
 function onFileChange(event: Event) {
@@ -79,7 +79,7 @@ function decodeHtmlEntities(str: string): string {
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replace(/&#39;/g, '\'')
 }
 
 function parseTeamBoxCsv(content: string) {
@@ -111,7 +111,7 @@ function parseTeamBoxCsv(content: string) {
       description: projekt,
       quantity: stunden,
       unitPrice: props.defaultUnitPrice || 0,
-      vatRate: 20,
+      vatRate: 20
     })
   }
 
@@ -188,18 +188,34 @@ function lineTotal(item: LineItem) {
             <table class="w-full text-sm">
               <thead class="bg-elevated sticky top-0">
                 <tr>
-                  <th class="text-left p-2">Beschreibung</th>
-                  <th class="text-right p-2">Menge</th>
-                  <th class="text-right p-2">Einzelpreis</th>
-                  <th class="text-right p-2">Gesamt</th>
+                  <th class="text-left p-2">
+                    Beschreibung
+                  </th>
+                  <th class="text-right p-2">
+                    Menge
+                  </th>
+                  <th class="text-right p-2">
+                    Einzelpreis
+                  </th>
+                  <th class="text-right p-2">
+                    Gesamt
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(item, index) in parsedItems" :key="index" class="border-t border-default">
-                  <td class="p-2">{{ item.description }}</td>
-                  <td class="p-2 text-right tabular-nums">{{ item.quantity }}</td>
-                  <td class="p-2 text-right tabular-nums">{{ item.unitPrice.toFixed(2) }} €</td>
-                  <td class="p-2 text-right tabular-nums">{{ lineTotal(item) }} €</td>
+                  <td class="p-2">
+                    {{ item.description }}
+                  </td>
+                  <td class="p-2 text-right tabular-nums">
+                    {{ item.quantity }}
+                  </td>
+                  <td class="p-2 text-right tabular-nums">
+                    {{ item.unitPrice.toFixed(2) }} €
+                  </td>
+                  <td class="p-2 text-right tabular-nums">
+                    {{ lineTotal(item) }} €
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -210,7 +226,12 @@ function lineTotal(item: LineItem) {
 
     <template #footer>
       <div class="flex justify-end gap-2">
-        <UButton variant="outline" color="neutral" label="Abbrechen" @click="resetAndClose" />
+        <UButton
+          variant="outline"
+          color="neutral"
+          label="Abbrechen"
+          @click="resetAndClose"
+        />
         <UButton
           label="Importieren"
           :disabled="parsedItems.length === 0"

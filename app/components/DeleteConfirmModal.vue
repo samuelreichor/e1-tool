@@ -10,6 +10,16 @@ const open = defineModel<boolean>('open', { default: false })
 const emit = defineEmits<{
   confirm: []
 }>()
+
+const deleteBtn = ref<{ $el: HTMLElement } | null>(null)
+
+watch(open, (isOpen) => {
+  if (isOpen) {
+    nextTick(() => {
+      deleteBtn.value?.$el?.focus()
+    })
+  }
+})
 </script>
 
 <template>
@@ -32,16 +42,16 @@ const emit = defineEmits<{
         <template #footer>
           <div class="flex justify-end gap-2">
             <UButton
-              color="neutral"
-              variant="outline"
-              label="Abbrechen"
-              @click="open = false"
-            />
-            <UButton
               color="error"
               label="Löschen"
               :loading="props.loading"
               @click="emit('confirm')"
+            />
+            <UButton
+              color="neutral"
+              variant="outline"
+              label="Abbrechen"
+              @click="open = false"
             />
           </div>
         </template>
